@@ -4,22 +4,25 @@ namespace App\Filament\Resources;
 
 use App\Enums\NavigationGroup;
 use App\Filament\Resources\ArticleResource\Pages;
-use App\Filament\Resources\ArticleResource\RelationManagers;
 use App\Models\Article;
 use App\Models\ArticleCategory;
 use Filament\Forms;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Group;
 use Filament\Forms\Components\MarkdownEditor;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class ArticleResource extends Resource
 {
@@ -36,25 +39,44 @@ class ArticleResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Group::make()
+                // Media Group
+                Group::make()
                     ->schema([
-                        Forms\Components\Section::make('Media')
+                        Section::make('Media')
                             ->description('Article Media')
                             ->schema([
-                                Forms\Components\SpatieMediaLibraryFileUpload::make('article'),
+                                SpatieMediaLibraryFileUpload::make('image'),
+                                TextInput::make('copyright'),
+                                TextInput::make('caption'),
+                                SpatieMediaLibraryFileUpload::make('trending_image')
+                                    ->helperText('In case the article is trending, choose a different image.'),
+                                TextInput::make('trending_copyright'),
                             ])
                     ])
                     ->columnSpanFull(),
-                Forms\Components\Group::make()
+                // Basic Group
+                Group::make()
                     ->schema([
-                        Forms\Components\Section::make('Basic')
+                        Section::make('Basic')
                             ->description('Basic article information')
                             ->schema([
                                 TextInput::make('title')
                                     ->required()
-                                    ->maxLength(255),
-                                MarkdownEditor::make('content')
+                                    ->maxLength(255)
+                                    ->live(debounce: 500)
+                                    ->afterStateUpdated(function (Get $get, Set $set, ?string $old, ?string $state) {
+                                        if (($get('slug') ?? '') !== Str::slug($old)) {
+                                            return;
+                                        }
+                                        $set('slug', Str::slug($state));
+                                    })
+                                    ->helperText('Main title that will be used for the Article. It will also be the SEO title in case none is provided. Choose wisely!'),
+                                TextInput::make('slug')->readOnly(),
+                                RichEditor::make('content')
                                     ->required(),
+                                Select::make('dossier_id')
+                                    ->relationship('dossier', 'title')
+                                    ->searchable(['title']),
                                 Select::make('category_id')
                                     ->relationship('category', 'name')
                                     ->options(ArticleCategory::all()->pluck('name', 'id')->take(5))
@@ -67,6 +89,28 @@ class ArticleResource extends Resource
                             ])
                     ])
                     ->columnSpanFull(),
+                // Author
+                Group::make()
+                    ->schema([
+                        Section::make('Author')
+                            ->description('Author of the article')
+                            ->schema([
+                                Select::make('author_id')
+                                    ->label('Author (Backend)')
+                                    ->relationship('author', 'name')
+                                    ->default(auth()->id())
+                                    ->searchable(['name'])
+                                    ->required(),
+                                Select::make('front_author_id')
+                                    ->relationship('author', 'name')
+                                    ->default(auth()->id())
+                                    ->searchable(['name'])
+                                    ->required(),
+                            ])
+                    ])
+                    ->columnSpanFull(),
+                // Relationships
+                
             ]);
     }
 

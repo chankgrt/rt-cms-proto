@@ -21,6 +21,11 @@ class Article extends Model implements HasMedia
 
     public function category(): BelongsTo
     {
-        return $this->belongsTo(ArticleCategory::class);
+        return $this->belongsTo(ArticleCategory::class, 'category_id');
+    }
+
+    public function dossier(): BelongsTo
+    {
+        return $this->belongsTo(ArticleDossier::class, 'dossier_id');
     }
 }
