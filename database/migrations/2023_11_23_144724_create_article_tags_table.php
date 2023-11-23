@@ -11,17 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('articles', function (Blueprint $table) {
+        Schema::create('article_tags', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->json('content')->nullable();
             $table->string('slug');
-            $table->foreignId('author_id');
-            $table->foreignId('front_author_id');
-            $table->foreignId('dossier_id')->nullable();
-            $table->foreignId('category_id')->nullable();
-            $table->timestamp('published_at')->nullable();
-            $table->boolean('is_active')->default(0);
+            $table->string('description')->nullable();
+            $table->string('meta_title')->nullable();
             $table->timestamps();
         });
     }
@@ -31,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('articles');
+        Schema::dropIfExists('article_tags');
     }
 };

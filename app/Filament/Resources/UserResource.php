@@ -7,6 +7,7 @@ use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -23,10 +24,16 @@ class UserResource extends Resource
         return NavigationGroup::UsersAndPermission->getLabel();
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        return parent::getModel()::count();
+    }
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
+                SpatieMediaLibraryFileUpload::make('image'),
                 TextInput::make('name')
                     ->required(),
                 TextInput::make('email')
