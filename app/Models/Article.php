@@ -9,9 +9,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Article extends Model implements HasMedia
+class Article extends Model
 {
-    use HasFactory, InteractsWithMedia;
+    use HasFactory;
 
     protected $fillable = [
         'title',
@@ -49,6 +49,12 @@ class Article extends Model implements HasMedia
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(ArticleTag::class, 'article_has_tags', 'article_id', 'tag_id')
+            ->withTimestamps();
+    }
+
+    public function media(): BelongsToMany
+    {
+        return $this->belongsToMany(Media::class, 'article_media', 'article_id', 'media_id')
             ->withTimestamps();
     }
 }

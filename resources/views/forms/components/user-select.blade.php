@@ -6,7 +6,7 @@
 
         <select id="user-select" name="author_id" class="choices__input">
             <!-- Options will be populated via JavaScript -->
-            <option>{{ $getRecord()->title }}</option>
+            <option>sample</option>
         </select>
     </div>
 </x-dynamic-component>

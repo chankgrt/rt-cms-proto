@@ -11,6 +11,7 @@ use App\Models\Article;
 use App\Models\ArticleCategory;
 use App\Models\ArticleTag;
 use App\Models\User;
+use Awcodes\Curator\Components\Forms\CuratorPicker;
 use Filament\Forms;
 use Filament\Forms\Components\Builder;
 use Filament\Forms\Components\DateTimePicker;
@@ -54,12 +55,18 @@ class ArticleResource extends Resource
                         Section::make('Media')
                             ->description('Article Media')
                             ->schema([
-                                SpatieMediaLibraryFileUpload::make('image'),
+                                // SpatieMediaLibraryFileUpload::make('image'),
                                 TextInput::make('copyright'),
                                 TextInput::make('caption'),
-                                SpatieMediaLibraryFileUpload::make('trending_image')
-                                    ->helperText('In case the article is trending, choose a different image.'),
+                                // SpatieMediaLibraryFileUpload::make('trending_image')
+                                //     ->helperText('In case the article is trending, choose a different image.'),
                                 TextInput::make('trending_copyright'),
+                                CuratorPicker::make('picker')
+                                    ->multiple()
+                                    ->relationship('media', 'id')
+                                    ->label('Media')
+                                    ->buttonLabel('Select Media')
+                                    ->color('primary') // defaults to primary
                             ])
                     ])
                     ->columnSpanFull(),
@@ -116,6 +123,7 @@ class ArticleResource extends Resource
                         Section::make('Author')
                             ->description('Author of the article')
                             ->schema([
+                                // \App\Forms\Components\UserSelect::make('sample_author_id'),
                                 Select::make('author_id')
                                     ->label('Author (Backend)')
                                     ->relationship('author', 'name')

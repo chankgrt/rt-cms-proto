@@ -33,7 +33,7 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                SpatieMediaLibraryFileUpload::make('image'),
+                // SpatieMediaLibraryFileUpload::make('image'),
                 TextInput::make('name')
                     ->required(),
                 TextInput::make('email')

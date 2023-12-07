@@ -65,8 +65,16 @@ class AdminPanelProvider extends PanelProvider
                     ->label(\App\Enums\NavigationGroup::Articles->getLabel())
                     ->icon('heroicon-o-newspaper')
             ])
+            ->viteTheme('resources/css/filament/admin/theme.css')
             ->plugins([
-                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
+                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
+                \Awcodes\Curator\CuratorPlugin::make()
+                    ->label('Media')
+                    ->pluralLabel('Media')
+                    ->navigationIcon('heroicon-o-photo')
+                    ->navigationGroup('Content')
+                    ->navigationSort(3)
+                    ->navigationCountBadge()
             ]);
     }
 }
