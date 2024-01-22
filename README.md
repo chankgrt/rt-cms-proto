@@ -29,16 +29,27 @@ You may run `make help` to list available commands.
 3. Build and start docker images by running the command below.
 ```bash
 make init
+make shell
 php artisan shield:install
 php artisan shield:super-admin
+npm run dev
 ```
 
 4. Voila! App is accessible thru [http://localhost/admin](http://localhost/admin)
+
+### Known Setup Issues
+
+We are in the process of resolving an issue regarding `db-up` and how the migrations keep on failing. If it does, simply rum `make init` as well.
+
+So far what we've found is that the mariadb fails to build first time, we are still unsure why this happens.
 
 ## Starting/Stopping the environment
 ```bash
 # Starting
 make start
+make shell
+npm run dev
+
 # Stopping
 make stop
 ```
