@@ -72,7 +72,7 @@ cache-clear: ## reset and re-seed
 copy-env: ## Copy .env file
 	cp .env.example .env
 
-init: init-install start key-gen wait db-up install-front-end ## Initialize for first time setup
+init: init-install start key-gen db-up install-front-end ## Initialize for first time setup
 
 queue-restart:
 	$(SAIL) $(ARTISAN) queue:restart
