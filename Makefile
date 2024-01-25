@@ -29,6 +29,9 @@ init-install: ## Initial Installation of deps. Used if the host doesn't have com
 	laravelsail/php81-composer:latest \
 	composer install --ignore-platform-reqs
 
+install-front-end:
+	$(SAIL) npm install
+
 install: ## Install all php libraries
 	$(SAIL) composer install
 
@@ -69,7 +72,7 @@ cache-clear: ## reset and re-seed
 copy-env: ## Copy .env file
 	cp .env.example .env
 
-init: init-install start key-gen db-up ## Initialize for first time setup
+init: init-install start key-gen db-up install-front-end ## Initialize for first time setup
 
 queue-restart:
 	$(SAIL) $(ARTISAN) queue:restart
